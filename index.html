@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NisanX - Connect & Grow</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
     body { background: #0a0e1a; min-height: 100vh; color: white; }
@@ -17,7 +16,6 @@
       display: flex; justify-content: space-between; align-items: center;
     }
     
-    /* Logo + Name Update */
     .logo { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 20px; cursor:pointer; }
     .logo-box {
       width: 32px; height: 32px; border-radius: 8px; overflow: hidden;
@@ -26,16 +24,10 @@
     .logo-box img {
       width: 100%; height: 100%; object-fit: cover;
     }
-    
-    .nav-links { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
-    .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 14px; cursor: pointer; }
-    .nav-links a:hover, .nav-links a.active { color: #38bdf8; }
 
-    /* 3-Line Hamburger Menu */
     .menu-toggle {
       width: 28px; height: 20px; display: flex; flex-direction: column;
-      justify-content: space-between; cursor: pointer; margin-left: 16px;
-      position: relative;
+      justify-content: space-between; cursor: pointer; position: relative;
     }
     .menu-toggle span {
       height: 3px; width: 100%; background: #38bdf8;
@@ -51,7 +43,6 @@
       transform: rotate(-45deg) translate(6px, -6px);
     }
 
-    /* Dropdown Menu */
     .dropdown-menu {
       display: none; position: absolute; top: 70px; right: 20px;
       background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px);
@@ -68,7 +59,7 @@
     }
     .dropdown-menu li a {
       display: block; padding: 12px 16px; color: rgba(255,255,255,0.8);
-      text-decoration: none; font-size: 14px; transition: 0.2s;
+      text-decoration: none; font-size: 14px; transition: 0.2s; cursor: pointer;
     }
     .dropdown-menu li a:hover {
       background: rgba(56,189,248,0.1); color: #38bdf8;
@@ -97,18 +88,6 @@
     h2 { font-size: 28px; text-align: center; margin-bottom: 8px; font-weight: 600; }
     .subtitle { color: rgba(255,255,255,0.6); text-align: center; font-size: 14px; margin-bottom: 32px; }
     
-    .social-btns { display: flex; gap: 12px; margin-bottom: 24px; }
-    .social-btn {
-      flex: 1; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px); color: white; padding: 14px; border-radius: 14px;
-      font-size: 14px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
-    }
-    .divider { text-align: center; color: rgba(255,255,255,0.4); margin: 24px 0; font-size: 14px; position: relative; }
-    .divider::before, .divider::after {
-      content: ''; position: absolute; top: 50%; width: 40%; height: 1px; background: rgba(255,255,255,0.1);
-    }
-    .divider::before { left: 0; } .divider::after { right: 0; }
-    
     label { color: rgba(255,255,255,0.8); font-size: 13px; margin-bottom: 6px; display: block; }
     input, textarea, select {
       width: 100%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
@@ -123,8 +102,6 @@
     }
     .main-btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .btn-small { width: auto; padding: 12px 24px; font-size: 14px; }
-    .btn-red { background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%); color: white; padding: 8px 16px; font-size: 12px; }
-    .btn-green { background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%); color: white; }
     
     .bottom-text { text-align: center; color: rgba(255,255,255,0.6); font-size: 14px; }
     .bottom-text a { color: #38bdf8; text-decoration: none; font-weight: 500; cursor: pointer; }
@@ -148,22 +125,10 @@
     .stat-card h4 { color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 8px; }
     .stat-card p { font-size: 28px; font-weight: 700; }
     
-    table { width: 100%; margin: 20px 0; border-collapse: collapse; position: relative; z-index: 2; }
-    th { background: rgba(56,189,248,0.2); padding: 12px; text-align: left; font-size: 13px; }
-    td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    td input { margin: 0; padding: 8px 12px; }
-    
-    .total-box {
-      background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3);
-      padding: 20px; border-radius: 16px; text-align: right; position: relative; z-index: 2; margin-top: 20px;
-    }
-    .total-box h3 { font-size: 24px; margin-top: 8px; }
-    
     .success-msg { background: rgba(34,197,94,0.2); border: 1px solid rgba(34,197,94,0.5); padding: 12px; border-radius: 12px; text-align: center; margin-bottom: 16px; display: none; }
     .footer { text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.4); font-size: 13px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 60px; }
     
     @media (max-width: 768px) {
-      .nav-links { gap: 10px; font-size: 12px; }
       h1 { font-size: 24px; }
       .grid { grid-template-columns: 1fr; }
     }
@@ -177,30 +142,20 @@
       </div>
       NisanX
     </div>
-    <div class="nav-links">
-      <a onclick="showPage('home')" id="nav-home">Home</a>
-      <a onclick="showPage('about')" id="nav-about">About</a>
-      <a onclick="showPage('services')" id="nav-services">Services</a>
-      <a onclick="showPage('invoice')" id="nav-invoice">Invoice 🧾</a>
-      <a onclick="showPage('dashboard')" id="nav-dashboard">Dashboard</a>
-      <a onclick="showPage('contact')" id="nav-contact">Contact</a>
-      <a onclick="showPage('login')" id="nav-login">Login</a>
-      
-      <!-- 3-Line Menu -->
-      <div class="menu-toggle" id="menuToggle">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
+    
+    <div class="menu-toggle" id="menuToggle">
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
     
-    <!-- Dropdown Menu -->
     <ul class="dropdown-menu" id="dropdownMenu">
-      <li><a href="#" onclick="showPage('dashboard'); toggleMenu()">📊 Dashboard</a></li>
-      <li><a href="#" onclick="showPage('invoice'); toggleMenu()">🧾 Invoice</a></li>
-      <li><a href="#" onclick="alert('Profile coming soon!'); toggleMenu()">👤 Profile</a></li>
-      <li><a href="#" onclick="alert('Settings coming soon!'); toggleMenu()">⚙️ Settings</a></li>
-      <li><a href="#" onclick="showPage('login'); toggleMenu()">🚪 Logout</a></li>
+      <li><a onclick="showPage('home'); toggleMenu()">🏠 Home</a></li>
+      <li><a onclick="showPage('about'); toggleMenu()">ℹ️ About</a></li>
+      <li><a onclick="showPage('services'); toggleMenu()">💼 Services</a></li>
+      <li><a onclick="showPage('dashboard'); toggleMenu()">📊 Dashboard</a></li>
+      <li><a onclick="showPage('contact'); toggleMenu()">📞 Contact</a></li>
+      <li><a onclick="showPage('login'); toggleMenu()">🚪 Login</a></li>
     </ul>
   </div>
 
@@ -248,72 +203,6 @@
         <button class="main-btn" style="margin-top:16px;" onclick="orderNow('Business - 5000tk')">Order Now</button>
       </div>
     </div>
-  </div>
-
-  <!-- Invoice Generator -->
-  <div class="page" id="invoice">
-    <h1>Invoice Generator</h1>
-    <p style="color:rgba(255,255,255,0.7); margin-bottom:32px;">Dokan er jonno Professional Memo banau + PDF Download</p>
-    
-    <div class="card">
-      <h3 style="margin-bottom:16px;">🏪 Dokan er Info</h3>
-      <div class="grid">
-        <div>
-          <label>Dokan er Naam</label>
-          <input type="text" id="shopName" placeholder="Rahman Store" value="NisanX Store">
-        </div>
-        <div>
-          <label>Mobile Number</label>
-          <input type="text" id="shopPhone" placeholder="01712-345678" value="01700-000000">
-        </div>
-      </div>
-      <label>Address</label>
-      <input type="text" id="shopAddress" placeholder="Kalir Bazar, Chandpur" value="Kalir Bazar, Chandpur">
-    </div>
-
-    <div class="card">
-      <h3 style="margin-bottom:16px;">👤 Customer Info</h3>
-      <div class="grid">
-        <div>
-          <label>Customer Naam</label>
-          <input type="text" id="custName" placeholder="Karim Uddin">
-        </div>
-        <div>
-          <label>Invoice No</label>
-          <input type="text" id="invNo" placeholder="INV-001">
-        </div>
-      </div>
-      <label>Date</label>
-      <input type="date" id="invDate">
-    </div>
-
-    <div class="card">
-      <h3 style="margin-bottom:16px;">📦 Product List</h3>
-      <table id="itemsTable">
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Qty</th>
-            <th>Price</th>
-            <th>Total</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="itemsBody"></tbody>
-      </table>
-      <button class="main-btn btn-small" onclick="addItem()">+ Add Product</button>
-      
-      <div class="total-box">
-        <p style="color:rgba(255,255,255,0.7);">Sub Total</p>
-        <h3 id="subTotal">0 Tk</h3>
-        <p style="color:rgba(255,255,255,0.7); margin-top:12px;">Discount</p>
-        <input type="number" id="discount" placeholder="0" value="0" oninput="calcTotal()" style="width:120px; text-align:right; margin-left:auto; display:block;">
-        <p style="color:rgba(255,255,255,0.7); margin-top:12px;">Grand Total</p>
-        <h3 id="grandTotal" style="color:#38bdf8;">0 Tk</h3>
-      </div>
-    </div>
-
-    <button class="main-btn btn-green" onclick="downloadPDF()">📄 Download PDF Memo</button>
   </div>
 
   <!-- Dashboard -->
@@ -386,40 +275,28 @@
     </div>
   </div>
 
-  <div class="footer">© 2026 NisanX. Made with ❤️ from Kalir Bazar. Fariya ke bhula ✅✅</div>
+  <div class="footer">© 2026 NisanX. Made with ❤️ from Kalir Bazar ✅</div>
 
   <script>
-    // 🔥🔥🔥 TELEGRAM SETUP - EITA CHANGE KORBA 🔥🔥🔥
     const BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE';
     const CHAT_ID = 'YOUR_CHAT_ID_HERE';
-    // 🔥🔥🔥🔥🔥🔥
-    
-    const { jsPDF } = window.jspdf;
     let orderCount = 0;
 
-    // Initialize
-    document.getElementById('invDate').valueAsDate = new Date();
-    document.getElementById('invNo').value = 'INV-' + Date.now().toString().slice(-6);
-    addItem();
+    // Menu Toggle
+    const menuToggle = document.getElementById("menuToggle");
+    const dropdownMenu = document.getElementById("dropdownMenu");
 
-    // Menu Toggle Function
-    function toggleMenu() {
-      const menuToggle = document.getElementById("menuToggle");
-      const dropdownMenu = document.getElementById("dropdownMenu");
-      dropdownMenu.classList.toggle("show");
-      menuToggle.classList.toggle("active");
-    }
-
-    // Menu Toggle Event
-    document.getElementById("menuToggle").addEventListener("click", function(e) {
+    menuToggle.addEventListener("click", function(e) {
       e.stopPropagation();
       toggleMenu();
     });
 
-    // Baire click korle menu close
+    function toggleMenu() {
+      dropdownMenu.classList.toggle("show");
+      menuToggle.classList.toggle("active");
+    }
+
     document.addEventListener("click", function(event) {
-      const menuToggle = document.getElementById("menuToggle");
-      const dropdownMenu = document.getElementById("dropdownMenu");
       if (!menuToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
         dropdownMenu.classList.remove("show");
         menuToggle.classList.remove("active");
@@ -429,9 +306,6 @@
     function showPage(pageId) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
-      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-      let navItem = document.getElementById('nav-' + pageId);
-      if(navItem) navItem.classList.add('active');
       window.scrollTo(0,0);
     }
 
@@ -507,102 +381,6 @@
       
       btn.disabled = false;
       btn.innerText = 'Send Message';
-    }
-
-    // Invoice Functions
-    function addItem() {
-      const tbody = document.getElementById('itemsBody');
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><input type="text" placeholder="Cha Pata" class="item-name"></td>
-        <td><input type="number" value="1" class="item-qty" oninput="calcTotal()"></td>
-        <td><input type="number" placeholder="50" class="item-price" oninput="calcTotal()"></td>
-        <td class="item-total">0 Tk</td>
-        <td><button class="btn btn-red" onclick="this.closest('tr').remove(); calcTotal()">X</button></td>
-      `;
-      tbody.appendChild(row);
-    }
-
-    function calcTotal() {
-      let subtotal = 0;
-      document.querySelectorAll('#itemsBody tr').forEach(row => {
-        const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
-        const price = parseFloat(row.querySelector('.item-price').value) || 0;
-        const total = qty * price;
-        row.querySelector('.item-total').innerText = total + ' Tk';
-        subtotal += total;
-      });
-      
-      const discount = parseFloat(document.getElementById('discount').value) || 0;
-      const grandTotal = subtotal - discount;
-      
-      document.getElementById('subTotal').innerText = subtotal + ' Tk';
-      document.getElementById('grandTotal').innerText = grandTotal + ' Tk';
-    }
-
-    function downloadPDF() {
-      const doc = new jsPDF();
-      
-      doc.setFontSize(20);
-      doc.text(document.getElementById('shopName').value || 'Shop Name', 105, 20, {align: 'center'});
-      doc.setFontSize(10);
-      doc.text(document.getElementById('shopAddress').value, 105, 28, {align: 'center'});
-      doc.text('Phone: ' + document.getElementById('shopPhone').value, 105, 34, {align: 'center'});
-      doc.line(20, 40, 190, 40);
-      
-      doc.setFontSize(14);
-      doc.text('INVOICE', 20, 50);
-      doc.setFontSize(10);
-      doc.text('Invoice No: ' + document.getElementById('invNo').value, 20, 58);
-      doc.text('Date: ' + document.getElementById('invDate').value, 20, 64);
-      doc.text('Customer: ' + (document.getElementById('custName').value || 'Walk-in Customer'), 20, 70);
-      
-      let y = 85;
-      doc.setFontSize(11);
-      doc.text('Item', 20, y);
-      doc.text('Qty', 100, y);
-      doc.text('Price', 130, y);
-      doc.text('Total', 170, y);
-      doc.line(20, y+2, 190, y+2);
-      
-      y += 10;
-      let subtotal = 0;
-      document.querySelectorAll('#itemsBody tr').forEach(row => {
-        const name = row.querySelector('.item-name').value || 'Item';
-        const qty = row.querySelector('.item-qty').value || 0;
-        const price = row.querySelector('.item-price').value || 0;
-        const total = qty * price;
-        subtotal += total;
-        
-        doc.setFontSize(10);
-        doc.text(name, 20, y);
-        doc.text(qty.toString(), 100, y);
-        doc.text(price + ' Tk', 130, y);
-        doc.text(total + ' Tk', 170, y);
-        y += 8;
-      });
-      
-      y += 5;
-      doc.line(130, y, 190, y);
-      y += 8;
-      const discount = parseFloat(document.getElementById('discount').value) || 0;
-      const grandTotal = subtotal - discount;
-      
-      doc.text('Sub Total:', 130, y);
-      doc.text(subtotal + ' Tk', 170, y);
-      y += 8;
-      doc.text('Discount:', 130, y);
-      doc.text(discount + ' Tk', 170, y);
-      y += 8;
-      doc.setFontSize(12);
-      doc.text('Grand Total:', 130, y);
-      doc.text(grandTotal + ' Tk', 170, y);
-      
-      doc.setFontSize(9);
-      doc.text('Thank you for your business!', 105, 280, {align: 'center'});
-      doc.text('Generated by NisanX Invoice Generator', 105, 285, {align: 'center'});
-      
-      doc.save('Invoice-' + document.getElementById('invNo').value + '.pdf');
     }
   </script>
 </body>
