@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NisanX - Invoice Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: #0a0e1a; min-height: 100vh; color: white; }
+    
+    .navbar {
+      background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px);
+      padding: 16px 20px; position: sticky; top: 0; z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    
+    .logo { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 20px; }
+    .logo-box {
+      width: 32px; height: 32px; border-radius: 8px; overflow: hidden;
+      background: #1e293b; border: 1px solid rgba(255,255,255,0.1);
+    }
+    .logo-box img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    .menu-toggle {
+      width: 28px; height: 20px; display: flex; flex-direction: column;
+      justify-content: space-between; cursor: pointer;
+    }
+    .menu-toggle span {
+      height: 3px; width: 100%; background: #38bdf8;
+      border-radius: 2px; transition: 0.3s;
+    }
+    .menu-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(6px, 6px);
+    }
+    .menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .menu-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    .dropdown-menu {
+      display: none; position: absolute; top: 70px; right: 20px;
+      background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+      list-style: none; padding: 8px 0; margin: 0; min-width: 180px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 1000;
+    }
+    .dropdown-menu.show {
+      display: block; animation: slideDown 0.2s ease;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .dropdown-menu li a {
+      display: block; padding: 12px 16px; color: rgba(255,255,255,0.8);
+      text-decoration: none; font-size: 14px; transition: 0.2s; cursor: pointer;
+    }
+    .dropdown-menu li a:hover {
+      background: rgba(56,189,248,0.1); color: #38bdf8;
+    }
+    
+    .container {
+      max-width: 900px; margin: 0 auto; padding: 40px 20px;
+    }
+    
+    h1 { font-size: 32px; margin-bottom: 8px; color: #38bdf8; }
+    .subtitle { color: rgba(255,255,255,0.6); font-size: 14px; margin-bottom: 32px; }
+    
+    .card {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px); padding: 24px; border-radius: 20px; margin-bottom: 20px;
+    }
+    .card h3 { color: #38bdf8; margin-bottom: 16px; font-size: 18px; }
+    
+    .grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    
+    label { color: rgba(255,255,255,0.8); font-size: 13px; margin-bottom: 6px; display: block; }
+    input, textarea, select {
+      width: 100%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px); color: white; padding: 14px 16px; border-radius: 12px;
+      margin-bottom: 16px; font-size: 14px; outline: none;
+    }
+    input::placeholder { color: rgba(255,255,255,0.4); }
+    
+    .main-btn {
+      width: 100%; background: linear-gradient(90deg, #38bdf8 0%, #60a5fa 100%); color: #0f172a;
+      border: none; padding: 16px; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 12px;
+    }
+    .btn-small { width: auto; padding: 12px 24px; font-size: 14px; }
+    .btn-red { 
+      background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%); color: white; 
+      padding: 8px 16px; font-size: 12px; border: none; border-radius: 8px; cursor: pointer;
+    }
+    .btn-green { background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%); color: white; }
+    
+    table { width: 100%; margin: 20px 0; border-collapse: collapse; }
+    th { 
+      background: rgba(56,189,248,0.2); padding: 12px; text-align: left; 
+      font-size: 13px; color: #38bdf8; font-weight: 600;
+    }
+    td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    td input { margin: 0; padding: 8px 12px; }
+    
+    .total-box {
+      background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3);
+      padding: 20px; border-radius: 16px; text-align: right; margin-top: 20px;
+    }
+    .total-box p { color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 4px; }
+    .total-box h3 { font-size: 24px; margin-top: 8px; color: white; }
+    .total-box h3.grand { color: #38bdf8; font-size: 28px; }
+    
+    .footer { 
+      text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.4); 
+      font-size: 13px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 60px; 
+    }
+    
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="logo">
+      <div class="logo-box">
+        <img src="NisanX.jpg" alt="NisanX Logo" id="logoImg">
+      </div>
+      NisanX Invoice
+    </div>
+    
+    <div class="menu-toggle" id="menuToggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    
+    <ul class="dropdown-menu" id="dropdownMenu">
+      <li><a onclick="window.print()">🖨️ Print</a></li>
+      <li><a onclick="downloadPDF()">📄 Download PDF</a></li>
+      <li><a onclick="location.reload()">🔄 New Invoice</a></li>
+      <li><a onclick="window.close()">❌ Close</a></li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <h1>Invoice Generator</h1>
+    <p class="subtitle">Professional memo banau + Logo shoho PDF download koro</p>
+    
+    <div class="card">
+      <h3>🏪 Dokan er Info</h3>
+      <div class="grid">
+        <div>
+          <label>Dokan er Naam</label>
+          <input type="text" id="shopName" placeholder="Rahman Store" value="NisanX Store">
+        </div>
+        <div>
+          <label>Mobile Number</label>
+          <input type="text" id="shopPhone" placeholder="01712-345678" value="01700-000000">
+        </div>
+      </div>
+      <label>Address</label>
+      <input type="text" id="shopAddress" placeholder="Kalir Bazar, Chandpur" value="Kalir Bazar, Chandpur">
+    </div>
+
+    <div class="card">
+      <h3>👤 Customer Info</h3>
+      <div class="grid">
+        <div>
+          <label>Customer Naam</label>
+          <input type="text" id="custName" placeholder="Karim Uddin">
+        </div>
+        <div>
+          <label>Invoice No</label>
+          <input type="text" id="invNo" placeholder="INV-001">
+        </div>
+      </div>
+      <label>Date</label>
+      <input type="date" id="invDate">
+    </div>
+
+    <div class="card">
+      <h3>📦 Product List</h3>
+      <table id="itemsTable">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="itemsBody"></tbody>
+      </table>
+      <button class="main-btn btn-small" onclick="addItem()">+ Add Product</button>
+      
+      <div class="total-box">
+        <p>Sub Total</p>
+        <h3 id="subTotal">0 Tk</h3>
+        <p style="margin-top: 12px;">Discount</p>
+        <input type="number" id="discount" placeholder="0" value="0" oninput="calcTotal()" style="width:120px; text-align:right; margin-left:auto; display:block;">
+        <p style="margin-top: 12px;">Grand Total</p>
+        <h3 class="grand" id="grandTotal">0 Tk</h3>
+      </div>
+    </div>
+
+    <button class="main-btn btn-green" onclick="downloadPDF()">📄 Download PDF Memo</button>
+    <button class="main-btn" onclick="window.print()" style="background: rgba(255,255,255,0.1); color: white;">🖨️ Print Invoice</button>
+  </div>
+
+  <div class="footer">© 2026 NisanX Invoice Generator. Made for Kalir Bazar Business</div>
+
+  <script>
+    const { jsPDF } = window.jspdf;
+
+    // Initialize
+    document.getElementById('invDate').valueAsDate = new Date();
+    document.getElementById('invNo').value = 'INV-' + Date.now().toString().slice(-6);
+    addItem();
+
+    // Menu Toggle
+    const menuToggle = document.getElementById("menuToggle");
+    const dropdownMenu = document.getElementById("dropdownMenu");
+
+    menuToggle.addEventListener("click", function(e) {
+      e.stopPropagation();
+      dropdownMenu.classList.toggle("show");
+      menuToggle.classList.toggle("active");
+    });
+
+    document.addEventListener("click", function(event) {
+      if (!menuToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
+        dropdownMenu.classList.remove("show");
+        menuToggle.classList.remove("active");
+      }
+    });
+
+    // Invoice Functions
+    function addItem() {
+      const tbody = document.getElementById('itemsBody');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><input type="text" placeholder="Cha Pata" class="item-name"></td>
+        <td><input type="number" value="1" class="item-qty" oninput="calcTotal()"></td>
+        <td><input type="number" placeholder="50" class="item-price" oninput="calcTotal()"></td>
+        <td class="item-total">0 Tk</td>
+        <td><button class="btn-red" onclick="this.closest('tr').remove(); calcTotal()">X</button></td>
+      `;
+      tbody.appendChild(row);
+    }
+
+    function calcTotal() {
+      let subtotal = 0;
+      document.querySelectorAll('#itemsBody tr').forEach(row => {
+        const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
+        const price = parseFloat(row.querySelector('.item-price').value) || 0;
+        const total = qty * price;
+        row.querySelector('.item-total').innerText = total + ' Tk';
+        subtotal += total;
+      });
+      
+      const discount = parseFloat(document.getElementById('discount').value) || 0;
+      const grandTotal = subtotal - discount;
+      
+      document.getElementById('subTotal').innerText = subtotal + ' Tk';
+      document.getElementById('grandTotal').innerText = grandTotal + ' Tk';
+    }
+
+    // PDF e Logo add korar function
+    function downloadPDF() {
+      const doc = new jsPDF();
+      const logoImg = document.getElementById('logoImg');
+      
+      // Logo add koro PDF e
+      try {
+        // Canvas use kore image ke base64 e convert
+        const canvas = document.createElement('canvas');
+        canvas.width = logoImg.naturalWidth || 100;
+        canvas.height = logoImg.naturalHeight || 100;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(logoImg, 0, 0);
+        const logoData = canvas.toDataURL('image/png');
+        
+        // PDF e logo boshau - left top e
+        doc.addImage(logoData, 'PNG', 20, 10, 25, 25);
+      } catch(e) {
+        console.log('Logo load hoy nai, skip kortesi');
+      }
+      
+      // Header - Logo er pashe
+      doc.setFontSize(22);
+      doc.setFont('helvetica', 'bold');
+      doc.text(document.getElementById('shopName').value || 'Shop Name', 50, 20);
+      
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.text(document.getElementById('shopAddress').value, 50, 27);
+      doc.text('Phone: ' + document.getElementById('shopPhone').value, 50, 33);
+      
+      doc.line(20, 40, 190, 40);
+      
+      // Invoice Info
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('INVOICE', 20, 50);
+      
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Invoice No: ' + document.getElementById('invNo').value, 20, 58);
+      doc.text('Date: ' + document.getElementById('invDate').value, 20, 64);
+      doc.text('Customer: ' + (document.getElementById('custName').value || 'Walk-in Customer'), 20, 70);
+      
+      // Table Header
+      let y = 85;
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Item', 20, y);
+      doc.text('Qty', 100, y);
+      doc.text('Price', 130, y);
+      doc.text('Total', 170, y);
+      doc.line(20, y+2, 190, y+2);
+      
+      // Table Items
+      y += 10;
+      let subtotal = 0;
+      doc.setFont('helvetica', 'normal');
+      document.querySelectorAll('#itemsBody tr').forEach(row => {
+        const name = row.querySelector('.item-name').value || 'Item';
+        const qty = row.querySelector('.item-qty').value || 0;
+        const price = row.querySelector('.item-price').value || 0;
+        const total = qty * price;
+        subtotal += total;
+        
+        doc.setFontSize(10);
+        doc.text(name, 20, y);
+        doc.text(qty.toString(), 100, y);
+        doc.text(price + ' Tk', 130, y);
+        doc.text(total + ' Tk', 170, y);
+        y += 8;
+      });
+      
+      // Totals
+      y += 5;
+      doc.line(130, y, 190, y);
+      y += 8;
+      const discount = parseFloat(document.getElementById('discount').value) || 0;
+      const grandTotal = subtotal - discount;
+      
+      doc.text('Sub Total:', 130, y);
+      doc.text(subtotal + ' Tk', 170, y);
+      y += 8;
+      doc.text('Discount:', 130, y);
+      doc.text(discount + ' Tk', 170, y);
+      y += 8;
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Grand Total:', 130, y);
+      doc.text(grandTotal + ' Tk', 170, y);
+      
+      // Footer
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Thank you for your business!', 105, 280, {align: 'center'});
+      doc.text('Generated by NisanX Invoice Generator', 105, 285, {align: 'center'});
+      
+      doc.save('Invoice-' + document.getElementById('invNo').value + '.pdf');
+    }
+  </script>
+</body>
+</html>
