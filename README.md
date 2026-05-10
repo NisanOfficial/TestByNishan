@@ -33,7 +33,7 @@ cd NisanX
 
 3. Telegram Setup (Optional)
 `index.html` er moddhe line 520-521:
-```bash
+```js
 const BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE'; // BotFather theke niba
 const CHAT_ID = 'YOUR_CHAT_ID_HERE';     // @userinfobot theke niba
 ```
