@@ -98,7 +98,7 @@ MIT License - Free use, modify, distribute.
 ---
 
 *Made with ❤️ from Kalir Bazar*  
-_Fariya ke bhula ✅✅_
+_deployed by NisHaN✅✅_
 
 **Ki ase etate:**
 1. **Project intro** - Ki kaj kore
